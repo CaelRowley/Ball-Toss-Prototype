@@ -28,8 +28,8 @@ public class PlayerThrow : MonoBehaviour
         {
             if(canThrow)
             {
-                Vector3 velocity = CalculateVelocity(targetPosition);
-                ThrowProjectile(targetPosition);
+                //Vector3 velocity = CalculateVelocity(targetPosition);
+                CalculateVelocity(targetPosition);
             }
             else
             {
@@ -38,7 +38,7 @@ public class PlayerThrow : MonoBehaviour
         }
     }
 
-    private Vector3 CalculateVelocity(Vector3 targetPosition)
+    private void CalculateVelocity(Vector3 targetPosition)
     {
         Vector3 targetDirection = targetPosition - transform.position; // get target direction
         float directionHeight = targetDirection.y;  // get height difference
@@ -48,12 +48,16 @@ public class PlayerThrow : MonoBehaviour
         distanceToTarget += directionHeight;  // correct for different heights
 
         float velocity = Mathf.Sqrt(distanceToTarget * Physics.gravity.magnitude * throwMagnitude);
-        return velocity * targetDirection.normalized;
+
+        Rigidbody instantiatedProjectile = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
+        instantiatedProjectile.velocity = velocity * targetDirection.normalized;
+
+        //float velocity = Mathf.Sqrt(distanceToTarget * Physics.gravity.magnitude * throwMagnitude);
+        //return velocity * targetDirection.normalized;
     }
 
     private void ThrowProjectile(Vector3 velocity)
     {
-        Rigidbody instantiatedProjectile = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
-        instantiatedProjectile.velocity = velocity;
+
     }
 }

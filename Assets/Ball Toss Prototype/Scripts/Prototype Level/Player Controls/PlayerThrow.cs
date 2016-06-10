@@ -3,15 +3,57 @@
 public class PlayerThrow : MonoBehaviour
 {
     public Rigidbody projectile;
-    public float speed;
+    public float throwDistanceMax;
+    public int projectileCount;
+    public float throwMagnitude;
 
-    // Spawns projectile when the magnet switch is used
+    private bool canThrow = true;
+    private Vector3 targetPosition;
+
     private void Update()
     {
+        if(projectileCount <= 0)
+            canThrow = false;
+
+        RaycastHit objectHit;
+        targetPosition = transform.forward * throwDistanceMax;
+
+        if(Physics.Raycast(transform.position, transform.forward, out objectHit, throwDistanceMax))
+        {
+            targetPosition = objectHit.point;
+            Debug.DrawLine(targetPosition, transform.position, Color.red, 1.0f, false);
+        }
+
         if(GvrViewer.Instance.Triggered)
         {
-            Rigidbody instantiatedProjectile = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
-            instantiatedProjectile.velocity = transform.TransformDirection(new Vector3(0, 0, speed));
+            if(canThrow)
+            {
+                Vector3 velocity = CalculateVelocity(targetPosition);
+                ThrowProjectile(targetPosition);
+            }
+            else
+            {
+                Debug.Log("Out of projectiles.");
+            }
         }
+    }
+
+    private Vector3 CalculateVelocity(Vector3 targetPosition)
+    {
+        Vector3 targetDirection = targetPosition - transform.position; // get target direction
+        float directionHeight = targetDirection.y;  // get height difference
+        targetDirection.y = 0;  // retain only the horizontal direction
+        float distanceToTarget = targetDirection.magnitude;  // get horizontal distance
+        targetDirection.y = distanceToTarget;  // set elevation to 45 degrees
+        distanceToTarget += directionHeight;  // correct for different heights
+
+        float velocity = Mathf.Sqrt(distanceToTarget * Physics.gravity.magnitude * throwMagnitude);
+        return velocity * targetDirection.normalized;
+    }
+
+    private void ThrowProjectile(Vector3 velocity)
+    {
+        Rigidbody instantiatedProjectile = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
+        instantiatedProjectile.velocity = velocity;
     }
 }

@@ -12,6 +12,8 @@ public class PlayerThrow : MonoBehaviour
         {
             Rigidbody instantiatedProjectile = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
             instantiatedProjectile.velocity = transform.TransformDirection(new Vector3(0, 0, speed));
+            //GvrGaze a = new GvrGaze();
+            //a.PointerObject.Ivgr
         }
     }
 }

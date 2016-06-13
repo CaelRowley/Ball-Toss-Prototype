@@ -52,12 +52,6 @@ public class PlayerThrow : MonoBehaviour
         Rigidbody instantiatedProjectile = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
         instantiatedProjectile.velocity = velocity * targetDirection.normalized;
 
-        //float velocity = Mathf.Sqrt(distanceToTarget * Physics.gravity.magnitude * throwMagnitude);
-        //return velocity * targetDirection.normalized;
-    }
-
-    private void ThrowProjectile(Vector3 velocity)
-    {
-
+        Debug.Log("Distance to target: " + distanceToTarget);
     }
 }
